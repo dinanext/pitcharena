@@ -80,7 +80,7 @@ export async function checkAdminSession(request?: Request): Promise<boolean> {
     const nh = await import('next/headers'); // may throw in some runtimes
     // nh.cookies is a function that returns a cookie store
     if (typeof nh.cookies === 'function') {
-      const cookieStore = nh.cookies();
+      const cookieStore = await nh.cookies();
       const admin = cookieStore.get?.(ADMIN_COOKIE_NAME);
       if (admin) return admin.value === 'true';
     }

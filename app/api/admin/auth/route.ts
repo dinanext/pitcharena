@@ -13,8 +13,12 @@ export async function POST(request: NextRequest) {
 
     if (action === "logout") {
       const res = NextResponse.json({ success: true });
-      // delete cookie (ensure path matches where cookie was set)
-      res.cookies.delete(ADMIN_COOKIE_NAME, { path: "/" });
+      res.cookies.set({
+        name: ADMIN_COOKIE_NAME,
+        value: "",
+        maxAge: 0,
+        path: "/",
+      });
       return res;
     }
 
