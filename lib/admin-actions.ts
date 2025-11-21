@@ -194,4 +194,5 @@ export async function deleteInvestorPersona(
     return { success: false, error: error.message };
   }
 
-  return { s
+  return { success: true };
+}
