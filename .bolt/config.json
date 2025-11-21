@@ -1,0 +1,34 @@
+{
+  "name": "Pitch Arena",
+  "description": "AI-powered startup pitch practice platform with diverse investor personas",
+  "version": "1.0.0",
+  "type": "nextjs",
+  "framework": "next",
+  "language": "typescript",
+  "features": [
+    "ai-integration",
+    "database",
+    "real-time-chat",
+    "voice-input",
+    "admin-dashboard",
+    "analytics"
+  ],
+  "database": {
+    "provider": "supabase",
+    "type": "postgresql",
+    "tables": ["investor_personas", "pitch_sessions"]
+  },
+  "ai": {
+    "providers": ["openai", "deepseek"],
+    "models": ["gpt-4o-mini", "deepseek-chat"]
+  },
+  "authentication": {
+    "enabled": false,
+    "note": "Simplified for MVP, uses user_id strings"
+  },
+  "deployment": {
+    "platform": "vercel",
+    "buildCommand": "npm run build",
+    "startCommand": "npm run start"
+  }
+}

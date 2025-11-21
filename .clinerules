@@ -1,0 +1,117 @@
+# Pitch Arena - AI Context & Rules
+
+## Project Overview
+Pitch Arena is a sophisticated platform for practicing startup pitches against AI-powered investor personas. Users engage in realistic pitch sessions with diverse investor personalities, each with unique investment theses, communication styles, and evaluation criteria.
+
+## Core Architecture
+
+### Technology Stack
+- **Framework**: Next.js 15 (App Router)
+- **Language**: TypeScript
+- **Database**: Supabase (PostgreSQL)
+- **Styling**: Tailwind CSS + shadcn/ui
+- **AI**: OpenAI GPT-4 / DeepSeek
+- **State**: React hooks
+
+### Key Features
+1. Multiple AI investor personas with distinct personalities
+2. Real-time chat-based pitch sessions
+3. Dynamic scoring system (funding probability)
+4. Voice input support (Web Speech API)
+5. Admin dashboard for persona management
+6. Session history and analytics
+
+## Database Schema
+
+### investor_personas
+- Stores AI investor profiles
+- Fields: name, role, region, risk_appetite, target_sector, check_size, investment_thesis, talking_style_json
+- Public read access via RLS
+
+### pitch_sessions
+- Tracks user pitch practice sessions
+- Fields: user_id, persona_id, chat_transcript, outcome, started_at, ended_at
+- User-specific RLS policies
+
+## Development Guidelines
+
+### Code Organization
+- Components in `/components` (UI components are in `/components/ui`)
+- API routes in `/app/api`
+- Server actions in `/lib` with database operations
+- Types defined in `/lib/types.ts`
+
+### Key Patterns
+1. **Database Operations**: Always use functions from `/lib/supabase.ts`
+2. **API Routes**: Follow Next.js 15 async params pattern
+3. **CRUD Operations**: Comprehensive functions available for all entities
+4. **Error Handling**: Always handle errors with proper feedback
+5. **RLS**: All database tables have Row Level Security enabled
+
+### AI Integration
+- System prompts built dynamically from persona data
+- Structured JSON responses from AI
+- Score adjustments range from -20 to +20
+- Responses include hidden feedback for learning
+
+### Security
+- RLS policies enforce user-specific data access
+- No authentication currently (simplified for MVP)
+- Environment variables for API keys
+- Public personas, private sessions
+
+## Common Tasks
+
+### Adding a New Investor Persona
+1. Use admin dashboard at `/secret-admin`
+2. Or insert directly via API: POST `/api/personas`
+3. Required fields: name, role, region, investment_thesis, talking_style_json
+
+### Creating a Pitch Session
+1. User selects persona from landing page
+2. Session created via POST `/api/sessions`
+3. Chat handled through POST `/api/chat`
+4. Session updated with outcome when complete
+
+### Modifying AI Behavior
+- Edit `investment_thesis` in persona record
+- Adjust `talking_style_json` (bluntness, jargon_level, favorite_word, humor)
+- Update system prompt in `/app/api/chat/route.ts`
+
+## File Structure
+```
+/app
+  /api - API routes
+  /arena/[investorId] - Main pitch interface
+  /secret-admin - Admin dashboard
+  layout.tsx - Root layout
+  page.tsx - Landing page
+/components - React components
+/lib - Utilities and database functions
+/docs - Comprehensive documentation
+```
+
+## Environment Variables
+- NEXT_PUBLIC_SUPABASE_URL
+- NEXT_PUBLIC_SUPABASE_ANON_KEY
+- OPENAI_API_KEY
+- DEEPSEEK_API_KEY
+
+## Documentation
+Comprehensive documentation available in `/docs`:
+- INDEX.md - Master navigation
+- SETUP.md - Local development setup
+- ARCHITECTURE.md - System design
+- DATABASE.md - Schema and queries
+- API.md - Endpoint reference
+- USER_GUIDE.md - End-user documentation
+- ADMIN_GUIDE.md - Admin operations
+- DEPLOYMENT.md - Production deployment
+- CONTRIBUTING.md - Development workflow
+
+## Important Notes
+- Middleware simplified (no Clerk auth)
+- Build must pass before deployment
+- 8 investor personas pre-seeded
+- TypeScript strict mode enabled
+- All CRUD operations tested and working
