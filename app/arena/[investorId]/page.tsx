@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
-import { useUser, UserButton } from '@clerk/nextjs';
+import { createClient } from '@/lib/supabase/client';
 import { getInvestorPersonaById } from '@/lib/supabase';
 import { InvestorPersona, Message } from '@/lib/types';
 import { ChatSidebar } from '@/components/chat-sidebar';
@@ -11,15 +11,15 @@ import { ChatInput } from '@/components/chat-input';
 import { GameOverModal } from '@/components/game-over-modal';
 import { AIProviderSelector } from '@/components/ai-provider-selector';
 import { Button } from '@/components/ui/button';
-import { Menu, Home } from 'lucide-react';
+import { Menu, Home, LogOut } from 'lucide-react';
 import { Sheet, SheetContent, SheetTrigger, SheetTitle } from '@/components/ui/sheet';
 import { ThemeSwitcher } from '@/components/theme-switcher';
 
 export default function ArenaPage() {
   const params = useParams();
   const router = useRouter();
-  const { isLoaded, isSignedIn } = useUser();
   const personaId = params.investorId as string;
+  const [user, setUser] = useState<any>(null);
 
   const [persona, setPersona] = useState<InvestorPersona | null>(null);
   const [loading, setLoading] = useState(true);
@@ -41,7 +41,14 @@ export default function ArenaPage() {
       }
     }
 
+    async function checkUser() {
+      const supabase = createClient();
+      const { data: { user } } = await supabase.auth.getUser();
+      setUser(user);
+    }
+
     loadPersona();
+    checkUser();
   }, [personaId, router]);
 
   useEffect(() => {
@@ -183,14 +190,21 @@ export default function ArenaPage() {
             <Home className="w-4 h-4" />
             <span className="hidden sm:inline">Home</span>
           </Button>
-          {isSignedIn && (
-            <UserButton
-              appearance={{
-                elements: {
-                  avatarBox: 'w-9 h-9',
-                },
+          {user && (
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={async () => {
+                const supabase = createClient();
+                await supabase.auth.signOut();
+                router.push('/');
+                router.refresh();
               }}
-            />
+              className="flex items-center gap-2"
+            >
+              <LogOut className="w-4 h-4" />
+              <span className="hidden sm:inline">Sign Out</span>
+            </Button>
           )}
         </div>
       </header>

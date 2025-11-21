@@ -5,16 +5,16 @@ import { InvestorPersona } from '@/lib/types';
 import { getInvestorPersonas } from '@/lib/supabase';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Zap, LogIn, Globe, TrendingUp, DollarSign } from 'lucide-react';
+import { Zap, LogIn, LogOut, Globe, TrendingUp, DollarSign } from 'lucide-react';
 import { useRouter } from 'next/navigation';
-import { useUser, UserButton } from '@clerk/nextjs';
+import { createClient } from '@/lib/supabase/client';
 import { ThemeSwitcher } from '@/components/theme-switcher';
 
 export function LandingPage() {
   const router = useRouter();
-  const { isSignedIn } = useUser();
   const [personas, setPersonas] = useState<InvestorPersona[]>([]);
   const [loading, setLoading] = useState(true);
+  const [user, setUser] = useState<any>(null);
 
   useEffect(() => {
     async function loadPersonas() {
@@ -23,6 +23,13 @@ export function LandingPage() {
       setLoading(false);
     }
     loadPersonas();
+
+    async function checkUser() {
+      const supabase = createClient();
+      const { data: { user } } = await supabase.auth.getUser();
+      setUser(user);
+    }
+    checkUser();
   }, []);
 
   const handleStartPitch = (personaId: string) => {
@@ -36,17 +43,22 @@ export function LandingPage() {
           <h1 className="text-2xl font-bold neon-text">PitchArena</h1>
           <div className="flex items-center gap-3">
             <ThemeSwitcher />
-            {isSignedIn ? (
-              <UserButton
-                appearance={{
-                  elements: {
-                    avatarBox: 'w-10 h-10',
-                  },
+            {user ? (
+              <Button
+                onClick={async () => {
+                  const supabase = createClient();
+                  await supabase.auth.signOut();
+                  router.refresh();
                 }}
-              />
+                variant="outline"
+                className="flex items-center gap-2"
+              >
+                <LogOut className="w-4 h-4" />
+                Sign Out
+              </Button>
             ) : (
               <Button
-                onClick={() => router.push('/sign-in')}
+                onClick={() => router.push('/login')}
                 variant="outline"
                 className="flex items-center gap-2"
               >
