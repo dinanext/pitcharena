@@ -47,11 +47,12 @@ export interface ChatState {
 
 export interface PitchSession {
   id: string;
-  user_id: string;
+  user_id: string | null;
   persona_id: string;
   chat_transcript: Message[];
-  funding_probability: number;
   outcome: 'win' | 'lose' | null;
+  started_at: string;
+  ended_at: string | null;
   created_at: string;
-  updated_at: string;
+  persona?: InvestorPersona;
 }
