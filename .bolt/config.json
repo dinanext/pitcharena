@@ -5,6 +5,7 @@
   "type": "nextjs",
   "framework": "next",
   "language": "typescript",
+  "template": "nextjs-shadcn",
   "features": [
     "ai-integration",
     "database",
