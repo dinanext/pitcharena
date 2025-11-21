@@ -1,0 +1,123 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 0 0% 5%;
+    --card: 0 0% 98%;
+    --card-foreground: 0 0% 5%;
+    --popover: 0 0% 98%;
+    --popover-foreground: 0 0% 5%;
+    --primary: 158 100% 40%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 0 0% 90%;
+    --secondary-foreground: 0 0% 5%;
+    --muted: 0 0% 95%;
+    --muted-foreground: 0 0% 40%;
+    --accent: 158 100% 40%;
+    --accent-foreground: 0 0% 100%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 0 0% 85%;
+    --input: 0 0% 85%;
+    --ring: 158 100% 40%;
+    --radius: 0.75rem;
+    --neon-green: 158 100% 40%;
+    --neon-red: 0 84% 60%;
+  }
+
+  .dark {
+    --background: 0 0% 5%;
+    --foreground: 0 0% 98%;
+    --card: 0 0% 8%;
+    --card-foreground: 0 0% 98%;
+    --popover: 0 0% 8%;
+    --popover-foreground: 0 0% 98%;
+    --primary: 158 100% 50%;
+    --primary-foreground: 0 0% 5%;
+    --secondary: 0 0% 15%;
+    --secondary-foreground: 0 0% 98%;
+    --muted: 0 0% 15%;
+    --muted-foreground: 0 0% 60%;
+    --accent: 158 100% 50%;
+    --accent-foreground: 0 0% 5%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 0 0% 20%;
+    --input: 0 0% 20%;
+    --ring: 158 100% 50%;
+    --neon-green: 158 100% 50%;
+    --neon-red: 0 84% 60%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+    min-height: 100vh;
+  }
+  
+  .dark body {
+    background: linear-gradient(to bottom, #000000, #0a0a0a);
+  }
+  
+  body {
+    background: linear-gradient(to bottom, #f5f5f5, #e5e5e5);
+  }
+}
+
+@layer utilities {
+  .glass-card {
+    background: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    box-shadow: 0 8px 32px 0 rgba(0, 200, 130, 0.1);
+  }
+
+  .dark .glass-card {
+    background: rgba(20, 20, 20, 0.6);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 8px 32px 0 rgba(0, 255, 157, 0.1);
+  }
+
+  .glass-card-hover {
+    @apply glass-card transition-all duration-300;
+  }
+
+  .glass-card-hover:hover {
+    background: rgba(255, 255, 255, 0.95);
+    border: 1px solid rgba(0, 200, 130, 0.3);
+    box-shadow: 0 8px 32px 0 rgba(0, 200, 130, 0.2);
+    transform: translateY(-4px);
+  }
+
+  .dark .glass-card-hover:hover {
+    background: rgba(30, 30, 30, 0.7);
+    border: 1px solid rgba(0, 255, 157, 0.3);
+    box-shadow: 0 8px 32px 0 rgba(0, 255, 157, 0.2);
+  }
+
+  .neon-text {
+    color: hsl(var(--neon-green));
+  }
+
+  .dark .neon-text {
+    text-shadow: 0 0 10px rgba(0, 255, 157, 0.5),
+                 0 0 20px rgba(0, 255, 157, 0.3),
+                 0 0 30px rgba(0, 255, 157, 0.2);
+  }
+
+  .neon-border {
+    border-color: hsl(var(--neon-green));
+  }
+
+  .dark .neon-border {
+    box-shadow: 0 0 10px rgba(0, 255, 157, 0.3);
+  }
+}
