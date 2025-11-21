@@ -1,55 +1,64 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { cookies } from 'next/headers';
+import { NextRequest, NextResponse } from "next/server";
 
-const ADMIN_COOKIE_NAME = 'admin_session';
-const COOKIE_MAX_AGE = 60 * 60;
+const ADMIN_COOKIE_NAME = "admin_session";
+const COOKIE_MAX_AGE = 60 * 60; // seconds
 
 export async function POST(request: NextRequest) {
   try {
-    const { secretKey, action } = await request.json();
+    const body = await request.json().catch(() => ({}));
+    const { secretKey, action } = body as {
+      secretKey?: string;
+      action?: string;
+    };
 
-    if (action === 'logout') {
-      const cookieStore = await cookies();
-      cookieStore.delete(ADMIN_COOKIE_NAME);
-      return NextResponse.json({ success: true });
+    if (action === "logout") {
+      const res = NextResponse.json({ success: true });
+      // delete cookie (ensure path matches where cookie was set)
+      res.cookies.delete(ADMIN_COOKIE_NAME, { path: "/" });
+      return res;
     }
 
-    if (action === 'login') {
+    if (action === "login") {
       const adminKey = process.env.ADMIN_SECRET_KEY;
 
       if (!adminKey) {
         return NextResponse.json(
-          { success: false, error: 'Admin key not configured' },
+          { success: false, error: "Admin key not configured" },
           { status: 500 }
         );
       }
 
       if (secretKey !== adminKey) {
         return NextResponse.json(
-          { success: false, error: 'Invalid secret key' },
+          { success: false, error: "Invalid secret key" },
           { status: 401 }
         );
       }
 
-      const cookieStore = await cookies();
-      cookieStore.set(ADMIN_COOKIE_NAME, 'true', {
+      const res = NextResponse.json({ success: true });
+
+      // set cookie on the response; options use seconds for maxAge
+      res.cookies.set({
+        name: ADMIN_COOKIE_NAME,
+        value: "true",
         httpOnly: true,
-        secure: process.env.NODE_ENV === 'production',
-        sameSite: 'strict',
+        secure: process.env.NODE_ENV === "production",
+        sameSite: "strict",
         maxAge: COOKIE_MAX_AGE,
-        path: '/',
+        path: "/",
       });
 
-      return NextResponse.json({ success: true });
+      return res;
     }
 
     return NextResponse.json(
-      { success: false, error: 'Invalid action' },
+      { success: false, error: "Invalid action" },
       { status: 400 }
     );
   } catch (error) {
+    console.error("Admin auth error:", error);
     return NextResponse.json(
-      { success: false, error: 'Server error' },
+      { success: false, error: "Server error" },
       { status: 500 }
     );
   }
